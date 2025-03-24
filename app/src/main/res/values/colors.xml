@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="air_force_blue">#00308F</color>
+    <color name="astros_navy">#002D62</color>
+    <color name="blue_de_france">#318CE7</color>
+    <color name="braves_navy">#13274F</color>
+    <color name="celeste">#B2FFFF</color>
+    <color name="pomegranate">#f44430</color>
+    <color name="dark_navy">#000433</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

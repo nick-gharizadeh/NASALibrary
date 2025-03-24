@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NASA Library</string>
+    <string name="search">Search</string>
+    <string name="trending_and_popular"><![CDATA[Trending & Popular]]></string>
 </resources>
