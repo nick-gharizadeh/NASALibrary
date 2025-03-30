@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.example.nasalibrary.ui.HomeFragment.HomeFragment"
+        android:name="com.project.nasalibrary.ui.HomeFragment.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/SearchFragment"
-        android:name="com.example.nasalibrary.ui.SearchFragment.SearchFragment"
+        android:name="com.project.nasalibrary.ui.SearchFragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
 </navigation>

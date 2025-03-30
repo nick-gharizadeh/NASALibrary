@@ -1,4 +1,4 @@
-package com.example.nasalibrary.ui.SearchFragment
+package com.project.nasalibrary.ui.SearchFragment
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.nasalibrary.R
+import com.example.nasalibrary.ui.SearchFragment.SearchViewModel
+import com.project.nasalibrary.R
+
 
 class SearchFragment : Fragment() {
 
