@@ -11,7 +11,10 @@ import com.project.nasalibrary.ui.SearchFragment.SearchFragment
 import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.ActivityMainBinding
 import com.project.nasalibrary.ui.HomeFragment.HomeFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 

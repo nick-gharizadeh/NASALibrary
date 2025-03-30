@@ -8,15 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.nasalibrary.ui.SearchFragment.SearchViewModel
 import com.project.nasalibrary.R
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = SearchFragment()
-    }
 
-    private val viewModel: SearchViewModel by viewModels()
+
+//    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
