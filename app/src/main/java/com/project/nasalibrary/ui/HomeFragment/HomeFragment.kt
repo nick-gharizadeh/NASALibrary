@@ -1,4 +1,4 @@
-package com.example.nasalibrary.ui.HomeFragment
+package com.project.nasalibrary.ui.HomeFragment
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.nasalibrary.R
+import com.example.nasalibrary.ui.HomeFragment.HomeViewModel
+import com.project.nasalibrary.R
 
 class HomeFragment : Fragment() {
 

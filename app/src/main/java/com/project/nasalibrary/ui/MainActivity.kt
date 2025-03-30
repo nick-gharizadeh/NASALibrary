@@ -1,4 +1,4 @@
-package com.example.nasalibrary.ui
+package com.project.nasalibrary.ui
 
 import android.os.Bundle
 import android.view.View
@@ -7,10 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.example.nasalibrary.R
-import com.example.nasalibrary.databinding.ActivityMainBinding
-import com.example.nasalibrary.ui.HomeFragment.HomeFragment
-import com.example.nasalibrary.ui.SearchFragment.SearchFragment
+import com.project.nasalibrary.ui.SearchFragment.SearchFragment
+import com.project.nasalibrary.R
+import com.project.nasalibrary.databinding.ActivityMainBinding
+import com.project.nasalibrary.ui.HomeFragment.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
