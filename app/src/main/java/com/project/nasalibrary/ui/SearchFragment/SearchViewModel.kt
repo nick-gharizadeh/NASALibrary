@@ -25,18 +25,18 @@ class SearchViewModel  @Inject constructor(private val repository: SearchReposit
         searchData.value = NetworkResponse(response).getNetworkResponse()
     }
 
-//    fun performSearchWithDebounce(query: String) {
-//        viewModelScope.launch {
-//            flow {
-//                emit(query)
-//            }
-//                .debounce(500) // Debounce for 500ms
-//                .flowOn(Dispatchers.IO)
-//                .collect { searchQuery ->
-//                    callSearchApi(searchQuery)
-//                }
-//        }
-//    }
+    fun performSearchWithDebounce(query: String) {
+        viewModelScope.launch {
+            flow {
+                emit(query)
+            }
+                .debounce(1000) // Debounce for 500ms
+                .flowOn(Dispatchers.IO)
+                .collect { searchQuery ->
+                    callSearchApi(searchQuery)
+                }
+        }
+    }
 
 
 

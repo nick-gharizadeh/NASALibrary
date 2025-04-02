@@ -8,5 +8,6 @@ import retrofit2.http.Query
 
 interface ApiServices {
     @GET("search")
-    suspend fun search(@Query("q") query: String): Response<SearchResponse>
+    suspend fun search(@Query("q") query: String,@Query("media_type") mediaType:String="image",
+                       @Query("page_size") pageSize:Int=15): Response<SearchResponse>
 }

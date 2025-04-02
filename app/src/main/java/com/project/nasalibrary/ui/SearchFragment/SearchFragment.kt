@@ -9,10 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
-import com.project.nasalibrary.R
+import com.project.nasalibrary.adapter.SearchAdapter
 import com.project.nasalibrary.databinding.FragmentSearchBinding
 import com.project.nasalibrary.utils.NetworkRequest
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -20,6 +21,10 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModels()
+
+    @Inject
+    lateinit var searchAdapter: SearchAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +42,13 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.SearchRecyclerView.adapter = searchAdapter
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 s?.let {
-                    viewModel.callSearchApi(it.toString())
+                    viewModel.performSearchWithDebounce(it.toString())
                     loadSearchData()
                 }
             }
@@ -56,20 +61,35 @@ class SearchFragment : Fragment() {
         viewModel.searchData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkRequest.Loading -> {
-                    Snackbar.make(binding.root , "loading..." , Snackbar.LENGTH_SHORT).show()
-
+                    binding.loadingAnimationGroup.visibility = View.VISIBLE
                 }
                 is NetworkRequest.Success -> {
                     response.data?.let { data ->
-                        Snackbar.make(binding.root , data.collection?.items?.get(0)?.href.toString() , Snackbar.LENGTH_LONG).show()
+                        binding.loadingAnimationGroup.visibility = View.GONE
+                        if (data.collection?.items?.isNotEmpty() == true) {
+                            searchAdapter.setData(data.collection!!.items!!)
+                            Snackbar.make(
+                                binding.root,
+                                data.collection?.items?.get(0)?.href.toString(),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
                 is NetworkRequest.Error -> {
-
+                    response.message?.let {
+                        Snackbar.make(binding.root ,
+                            it, Snackbar.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
     }
+
+
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
