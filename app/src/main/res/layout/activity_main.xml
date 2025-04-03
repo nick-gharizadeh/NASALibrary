@@ -22,13 +22,17 @@
         app:lottie_rawRes="@raw/logo_animation"
         app:lottie_speed="1.5" />
 
-    <FrameLayout
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/hostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
