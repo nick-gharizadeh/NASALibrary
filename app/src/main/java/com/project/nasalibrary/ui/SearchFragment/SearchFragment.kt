@@ -1,4 +1,4 @@
-package com.project.nasalibrary.ui.SearchFragment
+package com.project.nasalibrary.ui.searchFragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.adapter.SearchAdapter
 import com.project.nasalibrary.databinding.FragmentSearchBinding
+import com.project.nasalibrary.model.search.Item
 import com.project.nasalibrary.utils.NetworkRequest
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,7 +44,6 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.SearchRecyclerView.adapter = searchAdapter
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -54,6 +55,10 @@ class SearchFragment : Fragment() {
             }
         })
 
+        binding.SearchRecyclerView.adapter = searchAdapter
+        searchAdapter.setOnItemClickListener {
+            gotoDetailFragment(it)
+        }
 
     }
 
@@ -73,6 +78,7 @@ class SearchFragment : Fragment() {
                                 data.collection?.items?.get(0)?.href.toString(),
                                 Snackbar.LENGTH_LONG
                             ).show()
+
                         }
                     }
                 }
@@ -87,6 +93,10 @@ class SearchFragment : Fragment() {
     }
 
 
+    private fun gotoDetailFragment(item: Item) {
+        val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(item)
+        findNavController().navigate(action)
+    }
 
 
 

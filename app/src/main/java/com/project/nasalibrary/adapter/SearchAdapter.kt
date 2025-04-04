@@ -44,21 +44,22 @@ class SearchAdapter @Inject constructor() : RecyclerView.Adapter<SearchAdapter.V
                 Glide.with(itemView)
                     .load(imageHref)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .transform(CenterCrop(),RoundedCorners(20))
+                    .transform(CenterCrop(), RoundedCorners(20))
                     .into(binding.imageViewMainItem)
                 //Click
-//                root.setOnClickListener {
-//                    onItemClickListener?.let { it(item.data!!)
-//                    }
+                root.setOnClickListener {
+                    onItemClickListener?.let {
+                        it(item)
+                    }
                 }
             }
 
+        }
     }
 
+    private var onItemClickListener: ((Item) -> Unit)? = null
 
-    private var onItemClickListener: ((Int) -> Unit)? = null
-
-    fun setOnItemClickListener(listener: (Int) -> Unit) {
+    fun setOnItemClickListener(listener: (Item) -> Unit) {
         onItemClickListener = listener
     }
 

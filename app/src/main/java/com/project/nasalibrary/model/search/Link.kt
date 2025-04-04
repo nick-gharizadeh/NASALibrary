@@ -1,8 +1,12 @@
 package com.project.nasalibrary.model.search
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 data class Link(
     @SerializedName("height")
     var height: Int?, // 266
@@ -16,4 +20,4 @@ data class Link(
     var size: Int?, // 15000
     @SerializedName("width")
     var width: Int? // 400
-)
+): Parcelable

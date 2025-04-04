@@ -1,8 +1,11 @@
 package com.project.nasalibrary.model.search
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Data(
     @SerializedName("album")
     var album: List<String?>?,
@@ -24,4 +27,4 @@ data class Data(
     var photographer: String?, // NASA
     @SerializedName("title")
     var title: String? // Apollo 11 Productions
-)
+): Parcelable

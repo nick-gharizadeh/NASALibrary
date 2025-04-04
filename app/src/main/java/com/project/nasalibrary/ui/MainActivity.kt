@@ -7,15 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.ActivityMainBinding
-import com.project.nasalibrary.ui.HomeFragment.HomeFragment
-import com.project.nasalibrary.ui.SearchFragment.SearchFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 

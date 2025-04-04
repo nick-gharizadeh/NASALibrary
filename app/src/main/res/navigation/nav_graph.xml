@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.project.nasalibrary.ui.HomeFragment.HomeFragment"
+        android:name="com.project.nasalibrary.ui.homeFragment.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/SearchFragment"
-        android:name="com.project.nasalibrary.ui.SearchFragment.SearchFragment"
+        android:name="com.project.nasalibrary.ui.searchFragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -21,7 +21,11 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.project.nasalibrary.ui.DetailFragment.DetailFragment"
+        android:name="com.project.nasalibrary.ui.detailFragment.DetailFragment"
         android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" />
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="Item"
+            app:argType="com.project.nasalibrary.model.search.Item" />
+    </fragment>
 </navigation>
