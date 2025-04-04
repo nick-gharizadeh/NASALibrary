@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SearchViewModel  @Inject constructor(private val repository: SearchRepository) : ViewModel() {
     val searchData = MutableLiveData<NetworkRequest<SearchResponse>>()
 
-    fun callSearchApi(query: String) = viewModelScope.launch {
+    private fun callSearchApi(query: String) = viewModelScope.launch {
         searchData.value = NetworkRequest.Loading()
         val response = repository.search(query)
         searchData.value = NetworkResponse(response).getNetworkResponse()
@@ -30,7 +30,7 @@ class SearchViewModel  @Inject constructor(private val repository: SearchReposit
             flow {
                 emit(query)
             }
-                .debounce(1000) // Debounce for 500ms
+                .debounce(1500) // Debounce for 1500ms
                 .flowOn(Dispatchers.IO)
                 .collect { searchQuery ->
                     callSearchApi(searchQuery)

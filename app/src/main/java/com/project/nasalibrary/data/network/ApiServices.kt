@@ -1,13 +1,21 @@
 package com.project.nasalibrary.data.network
 
+import com.project.nasalibrary.model.popular.PopularResponse
 import com.project.nasalibrary.model.search.SearchResponse
+import com.project.nasalibrary.utils.Constants
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 
 interface ApiServices {
+
     @GET("search")
     suspend fun search(@Query("q") query: String,@Query("media_type") mediaType:String="image",
                        @Query("page_size") pageSize:Int=15): Response<SearchResponse>
+
+    @GET(Constants.POPULAR_URL)
+    suspend fun getPopularItems(): Response<PopularResponse>
+
+
 }

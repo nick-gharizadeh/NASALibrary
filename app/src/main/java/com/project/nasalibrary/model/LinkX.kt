@@ -1,4 +1,4 @@
-package com.project.nasalibrary.model.search
+package com.project.nasalibrary.model
 
 
 import com.google.gson.annotations.SerializedName

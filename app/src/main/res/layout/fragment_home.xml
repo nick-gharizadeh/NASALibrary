@@ -15,6 +15,7 @@
             android:id="@+id/textView_popular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_weight="1"
             android:fontFamily="sans-serif"
@@ -23,43 +24,18 @@
             android:text="@string/trending_and_popular"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/searchTextInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/searchTextInputLayout" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="@+id/textView_popular"
-            app:layout_constraintTop_toBottomOf="@+id/textView_popular" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchTextInputLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/RecyclerViewPopular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:hint="@string/search"
-            android:padding="12dp"
-            android:paddingTop="32dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp"
+            android:layout_marginTop="24dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_search">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textStyle="bold" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintStart_toStartOf="@+id/textView_popular"
+            app:layout_constraintTop_toBottomOf="@+id/textView_popular" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

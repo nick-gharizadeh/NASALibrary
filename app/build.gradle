@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.dagger.hilt)
     id("kotlin-parcelize")
-    id("androidx.navigation.safeargs.kotlin") // Apply Safe Args plugin
+    id("androidx.navigation.safeargs.kotlin")
 
 
 
@@ -76,5 +76,6 @@ dependencies {
     kapt libs.compiler
     implementation libs.inflationx.calligraphy3
     implementation libs.viewpump
+
 
 }

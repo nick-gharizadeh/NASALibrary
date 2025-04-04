@@ -9,7 +9,12 @@
         android:id="@+id/HomeFragment"
         android:name="com.project.nasalibrary.ui.homeFragment.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_HomeFragment_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:launchSingleTop="false" />
+    </fragment>
     <fragment
         android:id="@+id/SearchFragment"
         android:name="com.project.nasalibrary.ui.searchFragment.SearchFragment"
@@ -17,7 +22,8 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_SearchFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -26,6 +32,6 @@
         tools:layout="@layout/fragment_detail" >
         <argument
             android:name="Item"
-            app:argType="com.project.nasalibrary.model.search.Item" />
+            app:argType="com.project.nasalibrary.model.Item" />
     </fragment>
 </navigation>

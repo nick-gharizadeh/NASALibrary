@@ -14,7 +14,7 @@ import com.project.nasalibrary.utils.BaseDiffUtils
 import javax.inject.Inject
 
 
-class SearchAdapter @Inject constructor() : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class PopularAdapter @Inject constructor() : RecyclerView.Adapter<PopularAdapter.ViewHolder>() {
 
     private lateinit var binding: MainItemBinding
     private var items = emptyList<Item>()
@@ -64,7 +64,7 @@ class SearchAdapter @Inject constructor() : RecyclerView.Adapter<SearchAdapter.V
     fun setData(data: List<Item>) {
         val adapterDiffUtils = BaseDiffUtils(items, data)
         val diffUtils = DiffUtil.calculateDiff(adapterDiffUtils)
-        items = data
+        items = data.slice(0 until 10)
         diffUtils.dispatchUpdatesTo(this)
     }
 }

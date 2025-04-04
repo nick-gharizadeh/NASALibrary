@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.adapter.SearchAdapter
 import com.project.nasalibrary.databinding.FragmentSearchBinding
-import com.project.nasalibrary.model.search.Item
+import com.project.nasalibrary.model.Item
 import com.project.nasalibrary.utils.NetworkRequest
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
