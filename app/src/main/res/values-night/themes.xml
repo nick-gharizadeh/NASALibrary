@@ -9,7 +9,6 @@
         <item name="colorSecondary">@color/blue_de_france</item>
         <item name="colorSecondaryVariant">@color/blue_de_france</item>
         <item name="colorOnSecondary">@color/air_force_blue</item>
-        <item name="android:windowBackground">@color/dark_navy</item>
         <!-- Customize your theme here. -->
         <item name="android:windowIsTranslucent">true</item>
 

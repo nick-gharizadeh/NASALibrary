@@ -1,4 +1,4 @@
-package com.project.nasalibrary.ui.SearchFragment
+package com.project.nasalibrary.ui.searchFragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

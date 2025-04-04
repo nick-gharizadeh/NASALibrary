@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity() {
 
 
         // Lottie animation setup
-        binding.lottieAnimationView.playAnimation()
-        binding.lottieAnimationView.animate().setDuration(4000).alpha(1f).withEndAction {
-            binding.lottieAnimationView.visibility = View.GONE
+        binding.lottieAnimationViewLogo.playAnimation()
+        binding.lottieAnimationViewLogo.animate().setDuration(4000).alpha(1f).withEndAction {
+            binding.lottieAnimationGroup.visibility = View.GONE
             binding.hostFragment.visibility = View.VISIBLE
             binding.bottomNavigation.visibility = View.VISIBLE
         }

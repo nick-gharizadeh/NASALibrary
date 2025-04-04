@@ -1,6 +1,5 @@
-package com.project.nasalibrary.ui.HomeFragment
+package com.project.nasalibrary.ui.homeFragment
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
