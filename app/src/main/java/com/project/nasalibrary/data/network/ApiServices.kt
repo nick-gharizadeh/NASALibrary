@@ -1,6 +1,7 @@
 package com.project.nasalibrary.data.network
 
 import com.project.nasalibrary.model.popular.PopularResponse
+import com.project.nasalibrary.model.recent.RecentResponse
 import com.project.nasalibrary.model.search.SearchResponse
 import com.project.nasalibrary.utils.Constants
 import retrofit2.Response
@@ -17,5 +18,7 @@ interface ApiServices {
     @GET(Constants.POPULAR_URL)
     suspend fun getPopularItems(): Response<PopularResponse>
 
+    @GET(Constants.RECENT_URL)
+    suspend fun getRecentItems(): Response<RecentResponse>
 
 }

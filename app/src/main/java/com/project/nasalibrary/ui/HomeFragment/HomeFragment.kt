@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.adapter.PopularAdapter
+import com.project.nasalibrary.adapter.RecentAdapter
 import com.project.nasalibrary.databinding.FragmentHomeBinding
 import com.project.nasalibrary.model.Item
 import com.project.nasalibrary.utils.NetworkRequest
@@ -24,11 +25,10 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var popularAdapter: PopularAdapter
+    @Inject
+    lateinit var recentAdapter: RecentAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +41,13 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.RecyclerViewPopular.adapter = popularAdapter
+        binding.RecyclerViewRecent.adapter = recentAdapter
         loadPopularData()
+        loadRecentData()
         popularAdapter.setOnItemClickListener {
+            gotoDetailFragment(it)
+        }
+        recentAdapter.setOnItemClickListener {
             gotoDetailFragment(it)
         }
 
@@ -71,6 +76,31 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+    private fun loadRecentData() {
+        viewModel.recentItemsData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkRequest.Loading -> {
+
+                }
+                is NetworkRequest.Success -> {
+                    response.data?.let { data ->
+                        if (data.collection.items.isNotEmpty()) {
+                            data.collection.items.let { recentAdapter.setData(it) }
+
+                        }
+                    }
+                }
+                is NetworkRequest.Error -> {
+                    response.message?.let {
+                        Snackbar.make(binding.root ,
+                            it, Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun gotoDetailFragment(item: Item) {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(item)
