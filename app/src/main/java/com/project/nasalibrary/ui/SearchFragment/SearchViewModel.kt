@@ -18,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel  @Inject constructor(private val repository: SearchRepository) : ViewModel() {
     val searchData = MutableLiveData<NetworkRequest<SearchResponse>>()
+    var searchedText = MutableLiveData<String>()
 
     private fun callSearchApi(query: String) = viewModelScope.launch {
         searchData.value = NetworkRequest.Loading()
@@ -25,15 +26,15 @@ class SearchViewModel  @Inject constructor(private val repository: SearchReposit
         searchData.value = NetworkResponse(response).getNetworkResponse()
     }
 
-    fun performSearchWithDebounce(query: String) {
+    fun performSearchWithDebounce() {
         viewModelScope.launch {
             flow {
-                emit(query)
+                emit(searchedText.value)
             }
                 .debounce(1500) // Debounce for 1500ms
                 .flowOn(Dispatchers.IO)
                 .collect { searchQuery ->
-                    callSearchApi(searchQuery)
+                    searchedText.value?.let { callSearchApi(it) }
                 }
         }
     }

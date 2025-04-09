@@ -28,11 +28,6 @@ class SearchFragment : Fragment() {
     lateinit var searchAdapter: SearchAdapter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,12 +41,22 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
-                    viewModel.performSearchWithDebounce(it.toString())
-                    loadSearchData()
+                    if(s.isNotEmpty() && s.toString() != viewModel.searchedText.value  ) {
+                        viewModel.searchedText.value = s.toString()
+                        Snackbar.make(
+                            binding.root,
+                            "${s.toString()}==${viewModel.searchedText.value }",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        viewModel.performSearchWithDebounce()
+                        loadSearchData()
+                    }
                 }
+
+            }
+            override fun afterTextChanged(s: Editable?) {
             }
         })
 
@@ -72,12 +77,12 @@ class SearchFragment : Fragment() {
                     response.data?.let { data ->
                         binding.loadingAnimationGroup.visibility = View.GONE
                         if (data.collection?.items?.isNotEmpty() == true) {
-                            searchAdapter.setData(data.collection!!.items!!)
-                            Snackbar.make(
-                                binding.root,
-                                data.collection?.items?.get(0)?.href.toString(),
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                            searchAdapter.setData(data.collection!!.items)
+//                            Snackbar.make(
+//                                binding.root,
+//                                data.collection?.items?.get(0)?.href.toString(),
+//                                Snackbar.LENGTH_SHORT
+//                            ).show()
 
                         }
                     }
