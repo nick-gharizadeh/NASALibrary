@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.project.nasalibrary.databinding.FragmentDetailBinding
+import com.project.nasalibrary.model.Link
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -22,7 +24,6 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
     private val args: DetailFragmentArgs by navArgs()
     private var toolbar: Toolbar? = null
-
 
 
     override fun onCreateView(
@@ -51,11 +52,19 @@ class DetailFragment : Fragment() {
             Glide.with(requireView())
                 .load(imageHref)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .transform( RoundedCorners(30))
+                .transform(RoundedCorners(30))
                 .into(headerImage)
+            headerImage.setOnClickListener {
+                item.data?.get(0)?.nasaId?.let { nasaId -> gotoImageDialogFragment(nasaId) }
+            }
 
         }
 
+    }
+
+    private fun gotoImageDialogFragment(nasaId: String) {
+        val action = DetailFragmentDirections.actionDetailFragmentToImageDialogFragment(nasaId)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

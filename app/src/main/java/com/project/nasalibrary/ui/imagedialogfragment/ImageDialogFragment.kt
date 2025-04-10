@@ -13,8 +13,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
+import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.databinding.FragmentImageDialogBinding
+import com.project.nasalibrary.utils.NetworkRequest
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ImageDialogFragment : DialogFragment() {
 
 
@@ -23,7 +28,6 @@ class ImageDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
     private val args: ImageDialogFragmentArgs by navArgs()
     private var scaleFactor = 1.0f
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,21 +48,16 @@ class ImageDialogFragment : DialogFragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val link = args.link
+        // get safe arg
+        val nasaId = args.nasaId
+        // call api and show image
+        viewModel.callPopularApi(nasaId)
+        loadImage()
+
         val scaleGestureDetector = ScaleGestureDetector(requireContext(), ScaleListener())
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // Transparent background (50% opacity)
+        // Transparent background (80% opacity)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#CC000000")))
-
-        // Load image with Glide
-        link.href?.let { url ->
-            Glide.with(requireContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache for different sizes
-                .into(binding.imageView)
-        }
-
         // Enable zoom
         binding.imageView.setOnTouchListener { _, event ->
             scaleGestureDetector.onTouchEvent(event)
@@ -66,6 +65,37 @@ class ImageDialogFragment : DialogFragment() {
         }
 
 
+    }
+
+    private fun loadImage() {
+        viewModel.assetData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkRequest.Loading -> {
+                    binding.lottieAnimationViewLoading.visibility = View.VISIBLE
+                }
+
+                is NetworkRequest.Success -> {
+                    binding.lottieAnimationViewLoading.visibility = View.GONE
+                    response.data?.let { data ->
+                        // Load image with Glide
+                        val url = viewModel.findLargeImageHref(data)
+                        Glide.with(requireContext())
+                            .load(url)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(binding.imageView)
+                    }
+                }
+
+                is NetworkRequest.Error -> {
+                    response.message?.let {
+                        Snackbar.make(
+                            binding.root,
+                            it, Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
 
@@ -78,6 +108,7 @@ class ImageDialogFragment : DialogFragment() {
             return true
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

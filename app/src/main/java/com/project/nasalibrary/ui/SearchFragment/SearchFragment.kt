@@ -78,11 +78,6 @@ class SearchFragment : Fragment() {
                         binding.loadingAnimationGroup.visibility = View.GONE
                         if (data.collection?.items?.isNotEmpty() == true) {
                             searchAdapter.setData(data.collection!!.items)
-//                            Snackbar.make(
-//                                binding.root,
-//                                data.collection?.items?.get(0)?.href.toString(),
-//                                Snackbar.LENGTH_SHORT
-//                            ).show()
 
                         }
                     }
