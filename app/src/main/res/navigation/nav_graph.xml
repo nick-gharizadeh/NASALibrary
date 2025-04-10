@@ -33,5 +33,17 @@
         <argument
             android:name="Item"
             app:argType="com.project.nasalibrary.model.Item" />
+        <action
+            android:id="@+id/action_detailFragment_to_imageDialogFragment"
+            app:destination="@id/imageDialogFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/imageDialogFragment"
+        android:name="com.project.nasalibrary.ui.imagedialogfragment.ImageDialogFragment"
+        android:label="fragment_image_dialog"
+        tools:layout="@layout/fragment_image_dialog" >
+        <argument
+            android:name="link"
+            app:argType="com.project.nasalibrary.model.Link" />
+    </dialog>
 </navigation>
