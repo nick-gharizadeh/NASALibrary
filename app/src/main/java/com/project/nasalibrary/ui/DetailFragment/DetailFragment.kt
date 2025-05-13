@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.project.nasalibrary.databinding.FragmentDetailBinding
-import com.project.nasalibrary.model.Link
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -24,6 +24,7 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
     private val args: DetailFragmentArgs by navArgs()
     private var toolbar: Toolbar? = null
+    private val viewModel: DetailViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -46,8 +47,9 @@ class DetailFragment : Fragment() {
         }
 
         binding.apply {
-            textViewTitle.text = item.data?.get(0)?.title ?: "No title"
-            textViewDescription.text = item.data?.get(0)?.description
+            textViewTitle.text = item.data[0].title ?: "No title"
+            textViewDescription.text = item.data[0].description
+            textViewDate.text = viewModel.correctDateFormat(item.data[0].dateCreated)
             val imageHref = item.links?.get(0)?.href
             Glide.with(requireView())
                 .load(imageHref)

@@ -12,7 +12,7 @@ data class Data(
     @SerializedName("center")
     var center: String?, // KSC
     @SerializedName("date_created")
-    var dateCreated: String?, // 1985-01-01T00:00:00Z
+    var dateCreated: String, // 1985-01-01T00:00:00Z
     @SerializedName("description")
     var description: String?, // Productions "Apollo 11 Moon Landing" and "Project Apollo 11" plus imagery featuring Goddard's contributions to space.  TRT:  00:48:22
     @SerializedName("keywords")
