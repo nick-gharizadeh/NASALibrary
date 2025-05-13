@@ -16,7 +16,7 @@ data class Data(
     @SerializedName("description")
     var description: String?, // Productions "Apollo 11 Moon Landing" and "Project Apollo 11" plus imagery featuring Goddard's contributions to space.  TRT:  00:48:22
     @SerializedName("keywords")
-    var keywords: List<String?>?,
+    var keywords: List<String>,
     @SerializedName("location")
     var location: String?, // KSC
     @SerializedName("media_type")

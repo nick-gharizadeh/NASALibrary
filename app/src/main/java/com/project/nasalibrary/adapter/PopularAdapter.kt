@@ -36,7 +36,7 @@ class PopularAdapter @Inject constructor() : RecyclerView.Adapter<PopularAdapter
         fun bind(item: Item) {
             binding.apply {
                 //Text
-                textViewTitle.text = item.data?.get(0)?.title ?: ""
+                textViewTitle.text = item.data[0].title ?: ""
                 //Image
                 val imageHref = item.links?.get(0)?.href
                 Glide.with(itemView)

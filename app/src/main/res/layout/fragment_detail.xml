@@ -11,13 +11,15 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"> <ImageView
-        android:id="@+id/headerImage"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed" />
+        android:background="?attr/colorPrimary">
+
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -67,8 +69,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
 
                 <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/textViewDateCreatedLabel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="32dp"
@@ -77,18 +79,46 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/textViewDescription"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/textViewKeywordsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/keywords"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/textViewDescription"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDateCreatedLabel" />
 
                 <TextView
                     android:id="@+id/textViewDate"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
                     android:text="TextView"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toEndOf="@+id/textView"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textViewDateCreatedLabel"
+                    app:layout_constraintTop_toTopOf="@+id/textViewDateCreatedLabel" />
+
+                <TextView
+                    android:id="@+id/textViewKeywords"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:maxLines="5"
+                    android:text="TextView"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textViewKeywordsLabel"
+                    app:layout_constraintTop_toTopOf="@+id/textViewKeywordsLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
