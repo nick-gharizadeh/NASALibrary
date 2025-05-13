@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.databinding.FragmentImageDialogBinding
 import com.project.nasalibrary.utils.NetworkRequest
@@ -102,7 +101,7 @@ class ImageDialogFragment : DialogFragment() {
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             scaleFactor *= detector.scaleFactor
-            scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f))
+            scaleFactor = 0.1f.coerceAtLeast(scaleFactor.coerceAtMost(5.0f))
             binding.imageView.scaleX = scaleFactor
             binding.imageView.scaleY = scaleFactor
             return true
