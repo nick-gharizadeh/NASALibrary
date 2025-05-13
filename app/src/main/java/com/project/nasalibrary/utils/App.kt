@@ -1,6 +1,5 @@
 package com.project.nasalibrary.utils
 
-import android.R
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import io.github.inflationx.calligraphy3.CalligraphyConfig
