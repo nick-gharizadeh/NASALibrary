@@ -26,7 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
-            android:visibility="gone" /> </com.google.android.material.appbar.AppBarLayout>
+            android:visibility="gone" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 
 
@@ -41,19 +43,29 @@
                 android:layout_height="match_parent">
 
 
+                <ImageView
+                    android:id="@+id/shareImageView"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:src="@drawable/ic_share"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/textViewTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:text="@string/text"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/shareImageView" />
 
                 <TextView
                     android:id="@+id/textViewDescription"

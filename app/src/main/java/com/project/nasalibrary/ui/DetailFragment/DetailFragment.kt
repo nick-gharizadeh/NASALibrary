@@ -1,5 +1,6 @@
 package com.project.nasalibrary.ui.detailFragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -37,7 +38,14 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val item = args.Item
+        val title = item.data[0].title
+        val description = item.data[0].description
+        val date = viewModel.correctDateFormat(item.data[0].dateCreated)
+        val imageHref = item.links?.get(0)?.href
+        val keywords = item.data[0].keywords.joinToString(", ")
+
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
                 toolbar?.visibility = View.VISIBLE
@@ -47,20 +55,44 @@ class DetailFragment : Fragment() {
         }
 
         binding.apply {
-            textViewTitle.text = item.data[0].title ?: "No title"
-            textViewDescription.text = item.data[0].description
-            textViewDate.text = viewModel.correctDateFormat(item.data[0].dateCreated)
-            val imageHref = item.links?.get(0)?.href
+            textViewTitle.text = title
+            textViewDescription.text = description
+            textViewDate.text = date
+            textViewKeywords.text = keywords
             Glide.with(requireView())
                 .load(imageHref)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .transform(RoundedCorners(30))
                 .into(headerImage)
             headerImage.setOnClickListener {
-                item.data?.get(0)?.nasaId?.let { nasaId -> gotoImageDialogFragment(nasaId) }
+                item.data[0].nasaId?.let { nasaId -> gotoImageDialogFragment(nasaId) }
+            }
+
+            shareImageView.setOnClickListener {
+                val shareText = """
+                ✨ $title ✨
+
+                $description
+
+                🗓️ Date: $date
+                🏷️ Keywords: $keywords
+
+                ${if (!imageHref.isNullOrBlank()) "🖼️ Media Link: $imageHref" else ""}
+            """.trimIndent()
+
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, "Share via")
+                startActivity(shareIntent)
             }
 
         }
+
+
 
     }
 

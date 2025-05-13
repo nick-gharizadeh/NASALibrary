@@ -47,7 +47,7 @@ class SearchFragment : Fragment() {
                         viewModel.searchedText.value = s.toString()
                         Snackbar.make(
                             binding.root,
-                            "${s.toString()}==${viewModel.searchedText.value }",
+                            "$s==${viewModel.searchedText.value }",
                             Snackbar.LENGTH_LONG
                         ).show()
                         viewModel.performSearchWithDebounce()
