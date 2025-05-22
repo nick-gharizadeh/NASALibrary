@@ -8,4 +8,6 @@ object Constants {
 
     const val CONNECTION_TIME = 60L
 
+    const val VIDEO_MEDIA_TYPE = "video"
+
 }

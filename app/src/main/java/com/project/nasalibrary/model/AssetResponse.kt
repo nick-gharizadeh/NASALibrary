@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class AssetResponse(
     @SerializedName("collection")
-    var collection: LinkCollection?
+    var collection: LinkCollection
 )

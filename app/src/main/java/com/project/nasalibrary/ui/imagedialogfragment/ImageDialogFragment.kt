@@ -50,7 +50,7 @@ class ImageDialogFragment : DialogFragment() {
         // get safe arg
         val nasaId = args.nasaId
         // call api and show image
-        viewModel.callPopularApi(nasaId)
+        viewModel.callAssetApi(nasaId)
         loadImage()
 
         val scaleGestureDetector = ScaleGestureDetector(requireContext(), ScaleListener())

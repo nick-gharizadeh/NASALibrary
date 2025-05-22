@@ -15,7 +15,7 @@ interface ApiServices {
 
     @GET("search")
     suspend fun search(
-        @Query("q") query: String, @Query("media_type") mediaType: String = "image",
+        @Query("q") query: String,
         @Query("page_size") pageSize: Int = 15
     ): Response<SearchResponse>
 

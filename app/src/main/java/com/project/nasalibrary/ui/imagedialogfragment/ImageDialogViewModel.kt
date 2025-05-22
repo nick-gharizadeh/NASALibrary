@@ -20,7 +20,7 @@ class ImageDialogViewModel @Inject constructor(
     val assetData = MutableLiveData<NetworkRequest<AssetResponse>>()
 
 
-    fun callPopularApi(nasaId:String) = viewModelScope.launch {
+    fun callAssetApi(nasaId:String) = viewModelScope.launch {
         assetData.postValue(NetworkRequest.Loading())
         val response = repository.getAsset(nasaId)
         assetData.value = NetworkResponse(response).getNetworkResponse()
