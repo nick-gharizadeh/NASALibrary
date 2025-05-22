@@ -56,7 +56,7 @@ class DetailFragment : Fragment() {
         val description = item.data[0].description
         val date = viewModel.correctDateFormat(item.data[0].dateCreated)
         val mediaType = item.data[0].mediaType
-        val keywords = item.data[0].keywords.joinToString(", ")
+        val keywords = item.data[0].keywords?.joinToString(", ")
         val imageHref = item.links?.get(0)?.href
 
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -97,7 +97,10 @@ class DetailFragment : Fragment() {
             textViewTitle.text = title
             textViewDescription.text = description
             textViewDate.text = date
-            textViewKeywords.text = keywords
+            if(keywords!=null) {
+                textViewKeywords.text = keywords
+                keywordSection.visibility=View.VISIBLE
+            }
 
 
             shareImageView.setOnClickListener {
