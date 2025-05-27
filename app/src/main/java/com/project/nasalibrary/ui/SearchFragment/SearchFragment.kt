@@ -45,11 +45,6 @@ class SearchFragment : Fragment() {
                 s?.let {
                     if(s.isNotEmpty() && s.toString() != viewModel.searchedText.value  ) {
                         viewModel.searchedText.value = s.toString()
-                        Snackbar.make(
-                            binding.root,
-                            "$s==${viewModel.searchedText.value }",
-                            Snackbar.LENGTH_LONG
-                        ).show()
                         viewModel.performSearchWithDebounce()
                         loadSearchData()
                     }
