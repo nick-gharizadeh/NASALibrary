@@ -9,4 +9,5 @@
     <color name="dark_navy">#000433</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shimmer_placeholder">#DDDDDD</color>
 </resources>
