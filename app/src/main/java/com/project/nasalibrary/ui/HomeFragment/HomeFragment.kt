@@ -57,9 +57,19 @@ class HomeFragment : Fragment() {
         viewModel.popularItemsData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkRequest.Loading -> {
+                    binding.apply {
+                        RecyclerViewPopular.visibility = View.GONE
+                        shimmerLayoutPopular.visibility = View.VISIBLE
+                        shimmerLayoutPopular.startShimmer()
+                    }
 
                 }
                 is NetworkRequest.Success -> {
+                    binding.apply {
+                        shimmerLayoutPopular.stopShimmer()
+                        shimmerLayoutPopular.visibility = View.GONE
+                        RecyclerViewPopular.visibility = View.VISIBLE
+                    }
                     response.data?.let { data ->
                         if (data.collection.items.isNotEmpty()) {
                             data.collection.items.let { popularAdapter.setData(it) }
@@ -81,9 +91,18 @@ class HomeFragment : Fragment() {
         viewModel.recentItemsData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkRequest.Loading -> {
-
+                    binding.apply {
+                        RecyclerViewRecent.visibility = View.GONE
+                        shimmerLayoutRecent.visibility = View.VISIBLE
+                        shimmerLayoutRecent.startShimmer()
+                    }
                 }
                 is NetworkRequest.Success -> {
+                    binding.apply {
+                        shimmerLayoutRecent.stopShimmer()
+                        shimmerLayoutRecent.visibility = View.GONE
+                        RecyclerViewRecent.visibility = View.VISIBLE
+                    }
                     response.data?.let { data ->
                         if (data.collection.items.isNotEmpty()) {
                             data.collection.items.let { recentAdapter.setData(it) }
