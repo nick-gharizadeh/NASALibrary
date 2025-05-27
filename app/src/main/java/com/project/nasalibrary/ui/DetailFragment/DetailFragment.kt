@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
@@ -59,33 +58,34 @@ class DetailFragment : Fragment() {
         val keywords = item.data[0].keywords?.joinToString(", ")
         val imageHref = item.links?.get(0)?.href
 
+
+
+
+        if (mediaType == VIDEO_MEDIA_TYPE) {
+            nasaId?.let { viewModel.callAssetApi(it) }
+            loadItemAssetsURL()
+            binding.apply {
+                headerImage.visibility = View.GONE
+                playerConstraintView.visibility = View.VISIBLE
+            }
+
+        } else {
+            binding.apply {
+
+                Glide.with(requireView()).load(imageHref)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .transform(RoundedCorners(30)).into(headerImage)
+                headerImage.setOnClickListener {
+                    item.data[0].nasaId?.let { nasaId -> gotoImageDialogFragment(nasaId) }
+                }
+            }
+
+        }
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
                 toolbar?.visibility = View.VISIBLE
             } else if (verticalOffset == 0) {
                 toolbar?.visibility = View.GONE
-            }
-
-
-            if (mediaType == VIDEO_MEDIA_TYPE) {
-                nasaId?.let { viewModel.callAssetApi(it) }
-                loadItemAssetsLink()
-                binding.apply {
-                    appBarLayout.visibility = View.GONE
-                    playerConstraintView.visibility = View.VISIBLE
-                }
-
-            } else {
-                binding.apply {
-
-                    Glide.with(requireView()).load(imageHref)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .transform(RoundedCorners(30)).into(headerImage)
-                    headerImage.setOnClickListener {
-                        item.data[0].nasaId?.let { nasaId -> gotoImageDialogFragment(nasaId) }
-                    }
-                }
-
             }
 
         }
@@ -97,9 +97,9 @@ class DetailFragment : Fragment() {
             textViewTitle.text = title
             textViewDescription.text = description
             textViewDate.text = date
-            if(keywords!=null) {
+            if (keywords != null) {
                 textViewKeywords.text = keywords
-                keywordSection.visibility=View.VISIBLE
+                keywordSection.visibility = View.VISIBLE
             }
 
 
@@ -135,7 +135,7 @@ class DetailFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun loadItemAssetsLink() {
+    private fun loadItemAssetsURL() {
         viewModel.assetData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkRequest.Loading -> {
