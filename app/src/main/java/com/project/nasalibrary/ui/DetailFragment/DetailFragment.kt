@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -49,6 +51,7 @@ class DetailFragment : Fragment() {
         if (savedInstanceState != null) {
             playbackPosition = savedInstanceState.getLong("playback_position", 0)
         }
+        // item data
         val item = args.Item
         val title = item.data[0].title
         val nasaId = item.data[0].nasaId
@@ -81,6 +84,8 @@ class DetailFragment : Fragment() {
             }
 
         }
+
+
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) == appBarLayout.totalScrollRange) {
                 toolbar?.visibility = View.VISIBLE
@@ -103,6 +108,7 @@ class DetailFragment : Fragment() {
             }
 
 
+            // Share
             shareImageView.setOnClickListener {
                 val shareText = """
                 ✨ $title ✨
@@ -139,6 +145,7 @@ class DetailFragment : Fragment() {
         viewModel.assetData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkRequest.Loading -> {
+                    binding.lottieAnimationViewLoading.visibility = View.VISIBLE
 
                 }
 
@@ -150,6 +157,7 @@ class DetailFragment : Fragment() {
                         }
                         if (videoHref != null) {
                             initializePlayer(videoHref)
+                            binding.lottieAnimationViewLoading.visibility = View.GONE
                         }
 
                     }
@@ -170,14 +178,50 @@ class DetailFragment : Fragment() {
 
     private fun initializePlayer(videoHref: String) {
         if (player == null) {
-            player = ExoPlayer.Builder(requireContext()).build()
+            player = ExoPlayer.Builder(requireContext()).build().also {
+                it.addListener(playerListener)
+            }
+        } else {
+            player?.removeListener(playerListener)
+            player?.addListener(playerListener)
         }
+
         binding.videoPlayerView.player = player
         val mediaItem = MediaItem.fromUri(videoHref)
         player?.setMediaItem(mediaItem)
         player?.seekTo(playbackPosition)
-        player?.playWhenReady = false
         player?.prepare()
+        updateVideoLoadingIndicatorVisibility()
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            updateVideoLoadingIndicatorVisibility()
+        }
+
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            updateVideoLoadingIndicatorVisibility()
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            binding.lottieAnimationViewLoading.visibility = View.GONE // Hide on error
+            // Handle player error (e.g., show a message)
+            Snackbar.make(binding.root, "Video playback error: ${error.message}", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun updateVideoLoadingIndicatorVisibility() {
+        val currentPlayer = player
+        if (currentPlayer == null || _binding == null) {
+            _binding?.lottieAnimationViewLoading?.visibility = View.GONE
+            return
+        }
+
+        // Show loading if player wants to play AND is in buffering state
+        val showLoading = currentPlayer.playWhenReady &&
+                currentPlayer.playbackState == Player.STATE_BUFFERING
+
+        binding.lottieAnimationViewLoading.visibility = if (showLoading) View.VISIBLE else View.GONE
     }
 
 
@@ -200,6 +244,21 @@ class DetailFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         releasePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (args.Item.data[0].mediaType == VIDEO_MEDIA_TYPE && player == null) {
+            val currentAssetData = viewModel.assetData.value
+            if (currentAssetData is NetworkRequest.Success) {
+                currentAssetData.data?.let { data ->
+                    val videoHref = viewModel.findSmallestMp4Url(data)
+                    if (videoHref != null) {
+                        initializePlayer(videoHref)
+                    }
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
