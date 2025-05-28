@@ -12,12 +12,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.ActivityMainBinding
+import com.project.nasalibrary.ui.detailFragment.DetailFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),DetailFragment.FullscreenListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController : NavController
 
@@ -46,6 +47,9 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigation.visibility = View.VISIBLE
         }
 
+    }
+    override fun toggleActivityUIForFullscreen(isFullscreen: Boolean) {
+        binding.bottomNavigation.visibility = if (isFullscreen) View.GONE else View.VISIBLE
     }
 
     override fun attachBaseContext(newBase: Context?) {
