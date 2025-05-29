@@ -16,7 +16,9 @@ interface ApiServices {
     @GET("search")
     suspend fun search(
         @Query("q") query: String,
-        @Query("page_size") pageSize: Int = 15
+        @Query("page_size") pageSize: Int = 15,
+        @Query("page") page: Int
+
     ): Response<SearchResponse>
 
     @GET(Constants.POPULAR_URL)

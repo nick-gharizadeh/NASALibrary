@@ -3,64 +3,58 @@ package com.project.nasalibrary.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.MainItemBinding
 import com.project.nasalibrary.model.Item
-import com.project.nasalibrary.utils.BaseDiffUtils
-import com.project.nasalibrary.utils.Constants.VIDEO_MEDIA_TYPE
+import com.project.nasalibrary.utils.Constants
 import javax.inject.Inject
 
 
-class SearchAdapter @Inject constructor() : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SearchAdapter @Inject constructor() :
+    PagingDataAdapter<Item, SearchAdapter.ViewHolder>(ITEM_COMPARATOR) {
 
-    private lateinit var binding: MainItemBinding
-    private var items = emptyList<Item>()
+    inner class ViewHolder(private val binding: MainItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Item?) {
+            item?.let { currentItem ->
+                binding.apply {
+                    val firstDataItem = currentItem.data.firstOrNull()
+                    imageViewPlayIcon.visibility =
+                        if (firstDataItem?.mediaType == Constants.VIDEO_MEDIA_TYPE) View.VISIBLE else View.GONE
+                    textViewTitle.text = firstDataItem?.title ?: ""
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = MainItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder()
-    }
+                    val imageHref = currentItem.links?.firstOrNull { it?.href != null }?.href
+                    Glide.with(itemView.context)
+                        .load(imageHref)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .transform(CenterCrop(), RoundedCorners(20))
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.ic_error_image)
+                        .into(imageViewMainItem)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
 
-    override fun getItemCount() = items.size
-
-    override fun getItemViewType(position: Int) = position
-
-    override fun getItemId(position: Int) = position.toLong()
-
-    inner class ViewHolder : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Item) {
-            binding.apply {
-                // Show Play Icon if its a video
-                if(item.data[0].mediaType==VIDEO_MEDIA_TYPE)
-                {
-                    binding.imageViewPlayIcon.visibility = View.VISIBLE
-                }
-                //Text
-                textViewTitle.text = item.data[0].title ?: ""
-                //Image
-                val imageHref = item.links?.get(0)?.href
-                Glide.with(itemView)
-                    .load(imageHref)
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .transform(CenterCrop(), RoundedCorners(20))
-                    .into(binding.imageViewMainItem)
-                //Click
-                root.setOnClickListener {
-                    onItemClickListener?.let {
-                        it(item)
+                    root.setOnClickListener {
+                        onItemClickListener?.invoke(currentItem)
                     }
                 }
             }
-
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = MainItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     private var onItemClickListener: ((Item) -> Unit)? = null
@@ -69,10 +63,15 @@ class SearchAdapter @Inject constructor() : RecyclerView.Adapter<SearchAdapter.V
         onItemClickListener = listener
     }
 
-    fun setData(data: List<Item>) {
-        val adapterDiffUtils = BaseDiffUtils(items, data)
-        val diffUtils = DiffUtil.calculateDiff(adapterDiffUtils)
-        items = data
-        diffUtils.dispatchUpdatesTo(this)
+    companion object {
+        private val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<Item>() {
+            override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                return oldItem.href == newItem.href
+            }
+
+            override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

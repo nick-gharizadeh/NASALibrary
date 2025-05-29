@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation libs.androidx.paging.common.android
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -77,6 +78,8 @@ dependencies {
     implementation libs.inflationx.calligraphy3
     implementation libs.viewpump
     implementation libs.shimmer
+
+    implementation(libs.androidx.paging.runtime)
 
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)

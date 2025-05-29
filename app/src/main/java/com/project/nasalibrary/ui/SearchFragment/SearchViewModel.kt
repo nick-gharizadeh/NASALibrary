@@ -1,44 +1,37 @@
 package com.project.nasalibrary.ui.searchFragment
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.project.nasalibrary.data.repository.SearchRepository
-import com.project.nasalibrary.model.search.SearchResponse
-import com.project.nasalibrary.utils.NetworkRequest
-import com.project.nasalibrary.utils.NetworkResponse
+import com.project.nasalibrary.model.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel  @Inject constructor(private val repository: SearchRepository) : ViewModel() {
-    val searchData = MutableLiveData<NetworkRequest<SearchResponse>>()
-    var searchedText = MutableLiveData<String>()
+class SearchViewModel @Inject constructor(
+    private val repository: SearchRepository
+) : ViewModel() {
 
-    private fun callSearchApi(query: String) = viewModelScope.launch {
-        searchData.value = NetworkRequest.Loading()
-        val response = repository.search(query)
-        searchData.value = NetworkResponse(response).getNetworkResponse()
-    }
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    fun performSearchWithDebounce() {
-        viewModelScope.launch {
-            flow {
-                emit(searchedText.value)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val searchResults: Flow<PagingData<Item>> = _searchQuery
+        .debounce(1000L) // Debounce time for search query
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                flowOf(PagingData.empty())
+            } else {
+                repository.search(query)
             }
-                .debounce(1500) // Debounce for 1500ms
-                .flowOn(Dispatchers.IO)
-                .collect { searchQuery ->
-                    searchedText.value?.let { callSearchApi(it) }
-                }
         }
+        .cachedIn(viewModelScope)
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
     }
-
-
-
 }
