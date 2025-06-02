@@ -27,10 +27,22 @@ class ImageDialogViewModel @Inject constructor(
     }
 
 
-    fun findLargeImageHref(assetResponse: AssetResponse): String? {
-        return assetResponse.collection?.items?.find {
-            it.href?.contains("~large.jpg") ?: false
-        }?.href
+
+    // Searches for a preferred image URL in a specific order: medium, small, then large.
+    fun findPreferredImageUrl(assetResponse: AssetResponse): String? {
+        // Get all available image URLs
+        val urls: List<String> = assetResponse.collection.items.map { it.href }
+        // Define the search order
+        val preferredSizes = listOf("~medium.jpg", "~small.jpg", "~large.jpg")
+        // Find the first URL that matches the preferred sizes
+        for (size in preferredSizes) {
+            val foundUrl = urls.find { it.endsWith(size, ignoreCase = true) }
+            if (foundUrl != null) {
+                return foundUrl
+            }
+        }
+
+        return urls.find { it.endsWith(".jpg", ignoreCase = true) }
     }
 
 }
