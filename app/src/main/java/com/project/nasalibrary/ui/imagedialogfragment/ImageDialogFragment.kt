@@ -1,5 +1,8 @@
 package com.project.nasalibrary.ui.imagedialogfragment
 
+
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -35,7 +38,9 @@ class ImageDialogFragment : DialogFragment() {
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private lateinit var gestureDetector: GestureDetector
 
-    var scaleFactor = 1.0f
+    private var currentAnimator: AnimatorSet? = null
+
+    private var scaleFactor = 1.0f
     private val minScale = 1.0f
     private val maxScale = 5.0f
 
@@ -107,20 +112,18 @@ class ImageDialogFragment : DialogFragment() {
 
         gestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                if (scaleFactor > minScale) {
-                    animateToScaleAndCenter(minScale)
-                } else {
-                    animateToScaleAndCenter(maxScale / 2)
-                }
+                currentAnimator?.cancel()
+                val targetScale = if (scaleFactor > minScale) minScale else maxScale / 2
+                animateToScaleAndCenter(targetScale)
                 return true
             }
 
             override fun onScroll(
-                e1: MotionEvent?,
-                e2: MotionEvent,
-                distanceX: Float,
-                distanceY: Float
+                e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
             ): Boolean {
+                if (scaleGestureDetector.isInProgress) return false
+                currentAnimator?.cancel()
+
                 if (scaleFactor > minScale) {
                     var newTranslationX = binding.imageView.translationX - (distanceX * panSensitivity)
                     var newTranslationY = binding.imageView.translationY - (distanceY * panSensitivity)
@@ -140,26 +143,41 @@ class ImageDialogFragment : DialogFragment() {
     }
 
     private fun animateToScaleAndCenter(targetScale: Float) {
-        val targetTranslationX = 0f
-        val targetTranslationY = 0f
+        currentAnimator?.cancel()
 
-        val scaleXAnimator = ObjectAnimator.ofFloat(binding.imageView, "scaleX", targetScale)
-        val scaleYAnimator = ObjectAnimator.ofFloat(binding.imageView, "scaleY", targetScale)
-        val translationXAnimator = ObjectAnimator.ofFloat(binding.imageView, "translationX", targetTranslationX)
-        val translationYAnimator = ObjectAnimator.ofFloat(binding.imageView, "translationY", targetTranslationY)
+        val scaleXAnimator = ObjectAnimator.ofFloat(binding.imageView, View.SCALE_X, targetScale)
+        val scaleYAnimator = ObjectAnimator.ofFloat(binding.imageView, View.SCALE_Y, targetScale)
+        val translationXAnimator = ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, 0f)
+        val translationYAnimator = ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_Y, 0f)
 
-        AnimatorSet().apply {
+        scaleXAnimator.addUpdateListener {
+            scaleFactor = it.animatedValue as Float
+        }
+
+        currentAnimator = AnimatorSet().apply {
             playTogether(scaleXAnimator, scaleYAnimator, translationXAnimator, translationYAnimator)
             duration = 300
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    currentAnimator = null
+                }
+                override fun onAnimationCancel(animation: Animator) {
+                    currentAnimator = null
+                }
+            })
             start()
         }
-        scaleFactor = targetScale
     }
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+            currentAnimator?.cancel()
+            return true
+        }
+
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            scaleFactor *= detector.scaleFactor
-            scaleFactor = scaleFactor.coerceIn(minScale, maxScale)
+            val newScale = binding.imageView.scaleX * detector.scaleFactor
+            scaleFactor = newScale.coerceIn(minScale, maxScale)
 
             binding.imageView.scaleX = scaleFactor
             binding.imageView.scaleY = scaleFactor
@@ -182,6 +200,7 @@ class ImageDialogFragment : DialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        currentAnimator?.cancel() // Clean up animator
         _binding = null
     }
 }
