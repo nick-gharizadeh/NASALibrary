@@ -17,7 +17,7 @@ class App : Application()
                 .addInterceptor(
                     CalligraphyInterceptor(
                         CalligraphyConfig.Builder()
-                            .setDefaultFontPath("fonts/CsMonalisa.otf")
+                            .setDefaultFontPath("fonts/InterDisplay-Medium.ttf")
                             .build()
                     )
                 )

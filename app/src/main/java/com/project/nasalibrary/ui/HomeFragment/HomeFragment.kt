@@ -1,19 +1,24 @@
 package com.project.nasalibrary.ui.homeFragment
-
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
+import com.project.nasalibrary.R
 import com.project.nasalibrary.adapter.PopularAdapter
 import com.project.nasalibrary.adapter.RecentAdapter
 import com.project.nasalibrary.databinding.FragmentHomeBinding
 import com.project.nasalibrary.model.Item
-import com.project.nasalibrary.utils.NetworkRequest
+import com.project.nasalibrary.paging.LoadNextPageException
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,10 +30,9 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var popularAdapter: PopularAdapter
+
     @Inject
     lateinit var recentAdapter: RecentAdapter
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,86 +44,97 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerViews()
+        setupClickListeners()
+        observePopularData()
+        observeRecentData()
+    }
+
+    private fun setupRecyclerViews() {
         binding.RecyclerViewPopular.adapter = popularAdapter
         binding.RecyclerViewRecent.adapter = recentAdapter
-        loadPopularData()
-        loadRecentData()
-        popularAdapter.setOnItemClickListener {
-            gotoDetailFragment(it)
-        }
-        recentAdapter.setOnItemClickListener {
-            gotoDetailFragment(it)
-        }
-
     }
 
-    private fun loadPopularData() {
-        viewModel.popularItemsData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkRequest.Loading -> {
-                    binding.apply {
-                        RecyclerViewPopular.visibility = View.GONE
-                        shimmerLayoutPopular.visibility = View.VISIBLE
-                        shimmerLayoutPopular.startShimmer()
-                    }
+    private fun setupClickListeners() {
+        popularAdapter.setOnItemClickListener { gotoDetailFragment(it) }
+        recentAdapter.setOnItemClickListener { gotoDetailFragment(it) }
 
-                }
-                is NetworkRequest.Success -> {
-                    binding.apply {
-                        shimmerLayoutPopular.stopShimmer()
-                        shimmerLayoutPopular.visibility = View.GONE
-                        RecyclerViewPopular.visibility = View.VISIBLE
-                    }
-                    response.data?.let { data ->
-                        if (data.collection.items.isNotEmpty()) {
-                            data.collection.items.let { popularAdapter.setData(it) }
+        binding.buttonLoadMorePopular.setOnClickListener { popularAdapter.retry() }
+        binding.buttonLoadMoreRecent.setOnClickListener { recentAdapter.retry() }
+    }
 
-                        }
-                    }
+    private fun observePopularData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.popularItemsData.collectLatest { pagingData ->
+                popularAdapter.submitData(pagingData)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            popularAdapter.loadStateFlow.collectLatest { loadStates ->
+                // Initial load: show shimmer.
+                binding.shimmerLayoutPopular.isVisible = loadStates.refresh is LoadState.Loading
+                binding.RecyclerViewPopular.isVisible = loadStates.refresh is LoadState.NotLoading
+
+                // Loading state for next page (append).
+                binding.progressBarPopular.isVisible = loadStates.append is LoadState.Loading
+
+                // Check for our custom error to show the "Load More" button.
+                val appendError = loadStates.append as? LoadState.Error
+                if (appendError?.error is LoadNextPageException) {
+                    binding.buttonLoadMorePopular.isVisible = true
+                    binding.buttonLoadMorePopular.text = getString(R.string.load_more)
+                } else if (appendError != null) {
+                    // Handle real errors
+                    binding.buttonLoadMorePopular.isVisible = true
+                    binding.buttonLoadMorePopular.text = getString(R.string.retry)
+                    Snackbar.make(binding.root, "Error: ${appendError.error.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    binding.buttonLoadMorePopular.isVisible = !loadStates.append.endOfPaginationReached
                 }
-                is NetworkRequest.Error -> {
-                    response.message?.let {
-                        Snackbar.make(binding.root ,
-                            it, Snackbar.LENGTH_SHORT).show()
-                    }
+
+                // Hide button if we are at the end of the list
+                if (loadStates.append.endOfPaginationReached) {
+                    binding.buttonLoadMorePopular.isVisible = false
                 }
             }
         }
     }
 
-    private fun loadRecentData() {
-        viewModel.recentItemsData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkRequest.Loading -> {
-                    binding.apply {
-                        RecyclerViewRecent.visibility = View.GONE
-                        shimmerLayoutRecent.visibility = View.VISIBLE
-                        shimmerLayoutRecent.startShimmer()
-                    }
-                }
-                is NetworkRequest.Success -> {
-                    binding.apply {
-                        shimmerLayoutRecent.stopShimmer()
-                        shimmerLayoutRecent.visibility = View.GONE
-                        RecyclerViewRecent.visibility = View.VISIBLE
-                    }
-                    response.data?.let { data ->
-                        if (data.collection.items.isNotEmpty()) {
-                            data.collection.items.let { recentAdapter.setData(it) }
+    private fun observeRecentData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.recentItemsData.collectLatest { pagingData ->
+                recentAdapter.submitData(pagingData)
+            }
+        }
 
-                        }
-                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            recentAdapter.loadStateFlow.collectLatest { loadStates ->
+                // Initial load: show shimmer.
+                binding.shimmerLayoutRecent.isVisible = loadStates.refresh is LoadState.Loading
+                binding.RecyclerViewRecent.isVisible = loadStates.refresh is LoadState.NotLoading
+
+                // Loading state for next page (append).
+                binding.progressBarRecent.isVisible = loadStates.append is LoadState.Loading
+
+                val appendError = loadStates.append as? LoadState.Error
+                if (appendError?.error is LoadNextPageException) {
+                    binding.buttonLoadMoreRecent.isVisible = true
+                    binding.buttonLoadMoreRecent.text = getString(R.string.load_more)
+                } else if (appendError != null) {
+                    binding.buttonLoadMoreRecent.isVisible = true
+                    binding.buttonLoadMoreRecent.text = getString(R.string.retry)
+                    Snackbar.make(binding.root, "Error: ${appendError.error.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    binding.buttonLoadMoreRecent.isVisible = !loadStates.append.endOfPaginationReached
                 }
-                is NetworkRequest.Error -> {
-                    response.message?.let {
-                        Snackbar.make(binding.root ,
-                            it, Snackbar.LENGTH_SHORT).show()
-                    }
+
+                if (loadStates.append.endOfPaginationReached) {
+                    binding.buttonLoadMoreRecent.isVisible = false
                 }
             }
         }
     }
-
 
     private fun gotoDetailFragment(item: Item) {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(item)
@@ -128,7 +143,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.RecyclerViewPopular.adapter = null
+        binding.RecyclerViewRecent.adapter = null
         _binding = null
     }
-
 }

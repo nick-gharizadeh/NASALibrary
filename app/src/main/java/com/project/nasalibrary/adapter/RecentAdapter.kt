@@ -1,9 +1,8 @@
 package com.project.nasalibrary.adapter
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -12,27 +11,20 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.MainItemBinding
 import com.project.nasalibrary.model.Item
-import com.project.nasalibrary.utils.BaseDiffUtils
 import com.project.nasalibrary.utils.Constants
 import javax.inject.Inject
 
-class RecentAdapter @Inject constructor() : RecyclerView.Adapter<RecentAdapter.ViewHolder>() {
-
-    private lateinit var binding: MainItemBinding
-    private var items = emptyList<Item>()
+class RecentAdapter @Inject constructor() :
+    PagingDataAdapter<Item, RecentAdapter.ViewHolder>(PopularAdapter.ITEM_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = MainItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = MainItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
-
-    override fun getItemCount() = items.size
-
-    override fun getItemViewType(position: Int) = position
-
-    override fun getItemId(position: Int) = position.toLong()
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
 
     inner class ViewHolder(private val binding: MainItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -43,8 +35,7 @@ class RecentAdapter @Inject constructor() : RecyclerView.Adapter<RecentAdapter.V
                     imageViewPlayIcon.visibility =
                         if (firstDataItem?.mediaType == Constants.VIDEO_MEDIA_TYPE) View.VISIBLE else View.GONE
                     textViewTitle.text = firstDataItem?.title ?: ""
-
-                    val imageHref = currentItem.links?.firstOrNull { it?.href != null }?.href
+                    val imageHref = currentItem.links?.firstOrNull()?.href
                     Glide.with(itemView.context)
                         .load(imageHref)
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
@@ -52,8 +43,6 @@ class RecentAdapter @Inject constructor() : RecyclerView.Adapter<RecentAdapter.V
                         .placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.ic_error_image)
                         .into(imageViewMainItem)
-
-
                     root.setOnClickListener {
                         onItemClickListener?.invoke(currentItem)
                     }
@@ -66,12 +55,5 @@ class RecentAdapter @Inject constructor() : RecyclerView.Adapter<RecentAdapter.V
 
     fun setOnItemClickListener(listener: (Item) -> Unit) {
         onItemClickListener = listener
-    }
-
-    fun setData(data: List<Item>) {
-        val adapterDiffUtils = BaseDiffUtils(items, data)
-        val diffUtils = DiffUtil.calculateDiff(adapterDiffUtils)
-        items = data.slice(0 until 10)
-        diffUtils.dispatchUpdatesTo(this)
     }
 }
