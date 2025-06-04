@@ -21,7 +21,7 @@ class SearchViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults: Flow<PagingData<Item>> = _searchQuery
-        .debounce(1000L) // Debounce time for search query
+        .debounce(600L) // Debounce time for search query
         .flatMapLatest { query ->
             if (query.isBlank()) {
                 flowOf(PagingData.empty())

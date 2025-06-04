@@ -7,28 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.adapter.SearchAdapter
 import com.project.nasalibrary.adapter.SearchLoadStateAdapter
 import com.project.nasalibrary.databinding.FragmentSearchBinding
 import com.project.nasalibrary.model.Item
+import com.project.nasalibrary.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchFragment : BaseFragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModels()
+
 
     @Inject
     lateinit var searchPagingAdapter: SearchAdapter
@@ -44,6 +44,13 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
+        setupSearchInput()
+        observeSearchResults()
+        observeLoadStates()
+    }
+
+    override fun onRetry() {
         setupRecyclerView()
         setupSearchInput()
         observeSearchResults()
@@ -99,7 +106,6 @@ class SearchFragment : Fragment() {
             }
         }
     }
-
 
 
     private fun gotoDetailFragment(item: Item) {
