@@ -1,10 +1,10 @@
 package com.project.nasalibrary.ui.homeFragment
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,13 +16,14 @@ import com.project.nasalibrary.adapter.RecentAdapter
 import com.project.nasalibrary.databinding.FragmentHomeBinding
 import com.project.nasalibrary.model.Item
 import com.project.nasalibrary.paging.LoadNextPageException
+import com.project.nasalibrary.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -48,6 +49,11 @@ class HomeFragment : Fragment() {
         setupClickListeners()
         observePopularData()
         observeRecentData()
+    }
+
+    override fun onRetry() {
+        popularAdapter.retry()
+        recentAdapter.retry()
     }
 
     private fun setupRecyclerViews() {
@@ -88,9 +94,14 @@ class HomeFragment : Fragment() {
                     // Handle real errors
                     binding.buttonLoadMorePopular.isVisible = true
                     binding.buttonLoadMorePopular.text = getString(R.string.retry)
-                    Snackbar.make(binding.root, "Error: ${appendError.error.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        "Error: ${appendError.error.localizedMessage}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 } else {
-                    binding.buttonLoadMorePopular.isVisible = !loadStates.append.endOfPaginationReached
+                    binding.buttonLoadMorePopular.isVisible =
+                        !loadStates.append.endOfPaginationReached
                 }
 
                 // Hide button if we are at the end of the list
@@ -124,9 +135,14 @@ class HomeFragment : Fragment() {
                 } else if (appendError != null) {
                     binding.buttonLoadMoreRecent.isVisible = true
                     binding.buttonLoadMoreRecent.text = getString(R.string.retry)
-                    Snackbar.make(binding.root, "Error: ${appendError.error.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        "Error: ${appendError.error.localizedMessage}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 } else {
-                    binding.buttonLoadMoreRecent.isVisible = !loadStates.append.endOfPaginationReached
+                    binding.buttonLoadMoreRecent.isVisible =
+                        !loadStates.append.endOfPaginationReached
                 }
 
                 if (loadStates.append.endOfPaginationReached) {
