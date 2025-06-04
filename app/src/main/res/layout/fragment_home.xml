@@ -54,10 +54,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewPopular"
-            app:shimmer_duration="1000">
+            app:shimmer_duration="1000"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_item_layout" />
+
+                <include layout="@layout/shimmer_item_layout" />
+
+                <include layout="@layout/shimmer_item_layout" />
+            </LinearLayout>
+
+
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -80,7 +96,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/RecyclerViewPopular"
+            app:layout_constraintTop_toBottomOf="@id/barrierPopularItems"
             tools:visibility="visible" />
 
         <ProgressBar
@@ -91,7 +107,7 @@
             app:layout_constraintBottom_toBottomOf="@id/buttonLoadMorePopular"
             app:layout_constraintEnd_toEndOf="@id/buttonLoadMorePopular"
             app:layout_constraintStart_toStartOf="@id/buttonLoadMorePopular"
-            app:layout_constraintTop_toTopOf="@id/buttonLoadMorePopular"
+            app:layout_constraintTop_toTopOf="@id/barrierPopularItems"
             tools:visibility="visible" />
 
         <TextView
@@ -118,6 +134,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewRecent"
             app:shimmer_duration="1000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_item_layout" />
+
+                <include layout="@layout/shimmer_item_layout" />
+
+                <include layout="@layout/shimmer_item_layout" />
+            </LinearLayout>
+
+
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -142,7 +172,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/RecyclerViewRecent"
+            app:layout_constraintTop_toBottomOf="@id/barrierRecentItems"
             tools:visibility="visible" />
 
         <ProgressBar
@@ -153,8 +183,24 @@
             app:layout_constraintBottom_toBottomOf="@id/buttonLoadMoreRecent"
             app:layout_constraintEnd_toEndOf="@id/buttonLoadMoreRecent"
             app:layout_constraintStart_toStartOf="@id/buttonLoadMoreRecent"
-            app:layout_constraintTop_toTopOf="@id/buttonLoadMoreRecent"
+            app:layout_constraintTop_toTopOf="@id/barrierRecentItems"
             tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierPopularItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="shimmerLayoutPopular,RecyclerViewPopular"
+            />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierRecentItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="shimmerLayoutRecent,RecyclerViewRecent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
