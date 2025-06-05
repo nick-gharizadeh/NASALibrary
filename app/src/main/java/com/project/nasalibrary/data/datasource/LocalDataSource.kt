@@ -1,32 +1,33 @@
 package com.project.nasalibrary.data.datasource
 
 
-import com.project.nasalibrary.data.database.FavoriteDao
-import com.project.nasalibrary.model.FavoriteItemEntity
+import com.project.nasalibrary.data.database.FavoriteItemDao
+import com.project.nasalibrary.model.Item
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class LocalDataSource @Inject constructor(private val favoriteDao: FavoriteDao) {
+class LocalDataSource @Inject constructor(
+    private val favoriteItemDao: FavoriteItemDao
+) {
 
-    suspend fun addFavorite(favoriteItem: FavoriteItemEntity) {
-        favoriteDao.addFavorite(favoriteItem)
+    suspend fun insertFavoriteItem(item: Item) {
+        favoriteItemDao.insertFavoriteItem(item)
     }
 
-    suspend fun removeFavoriteById(nasaId: String) {
-        favoriteDao.removeFavoriteById(nasaId)
+    suspend fun deleteFavoriteItem(item: Item) {
+        favoriteItemDao.deleteFavoriteItem(item)
     }
 
-    fun getAllFavorites(): Flow<List<FavoriteItemEntity>> {
-        return favoriteDao.getAllFavorites()
+
+    fun getAllFavoriteItems(): Flow<List<Item>> {
+        return favoriteItemDao.getAllFavoriteItems()
     }
 
-    suspend fun getFavoriteById(nasaId: String): FavoriteItemEntity? {
-        return favoriteDao.getFavoriteById(nasaId)
+    suspend fun getFavoriteItemByHref(href: String): Item? {
+        return favoriteItemDao.getFavoriteItemByHref(href)
     }
 
-    fun isFavorite(nasaId: String): Flow<Boolean> {
-        return favoriteDao.isFavorite(nasaId)
+    fun isItemFavorite(href: String): Flow<Boolean> {
+        return favoriteItemDao.isItemFavorite(href)
     }
 }

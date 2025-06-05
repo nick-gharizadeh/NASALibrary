@@ -2,8 +2,8 @@ package com.project.nasalibrary.di
 
 import android.content.Context
 import androidx.room.Room
-import com.project.nasalibrary.data.database.FavoriteDao
 import com.project.nasalibrary.data.database.FavoriteDatabase
+import com.project.nasalibrary.data.database.FavoriteItemDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,7 +37,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideFavoriteDao(database: FavoriteDatabase): FavoriteDao {
+    fun provideFavoriteDao(database: FavoriteDatabase): FavoriteItemDao {
         return database.favoriteDao()
     }
 }

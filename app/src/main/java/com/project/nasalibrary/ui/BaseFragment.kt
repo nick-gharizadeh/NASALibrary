@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.project.nasalibrary.ui.nointernetdialogfragment.NoInternetDialogFragment
+import com.project.nasalibrary.ui.noInternetDialogFragment.NoInternetDialogFragment
 import com.project.nasalibrary.utils.INetworkConnectionObserver
 import com.project.nasalibrary.utils.NetworkConnectionObserver
 import kotlinx.coroutines.flow.MutableStateFlow

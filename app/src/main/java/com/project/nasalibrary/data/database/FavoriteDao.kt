@@ -1,27 +1,28 @@
 package com.project.nasalibrary.data.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.project.nasalibrary.model.FavoriteItemEntity
+import com.project.nasalibrary.model.Item
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FavoriteDao {
+interface FavoriteItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addFavorite(favoriteItem: FavoriteItemEntity)
+    suspend fun insertFavoriteItem(item: Item)
 
-    @Query("DELETE FROM favorite_items WHERE nasaId = :nasaId")
-    suspend fun removeFavoriteById(nasaId: String)
+    @Delete
+    suspend fun deleteFavoriteItem(item: Item)
 
-    @Query("SELECT * FROM favorite_items ORDER BY dateCreated DESC")
-    fun getAllFavorites(): Flow<List<FavoriteItemEntity>>
+    @Query("SELECT * FROM favorite_items")
+    fun getAllFavoriteItems(): Flow<List<Item>>
 
-    @Query("SELECT * FROM favorite_items WHERE nasaId = :nasaId")
-    suspend fun getFavoriteById(nasaId: String): FavoriteItemEntity?
+    @Query("SELECT * FROM favorite_items WHERE href = :href")
+    suspend fun getFavoriteItemByHref(href: String): Item?
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorite_items WHERE nasaId = :nasaId LIMIT 1)")
-    fun isFavorite(nasaId: String): Flow<Boolean>
+    @Query("SELECT EXISTS(SELECT 1 FROM favorite_items WHERE href = :href LIMIT 1)")
+    fun isItemFavorite(href: String): Flow<Boolean>
 }

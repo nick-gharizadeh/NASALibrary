@@ -1,4 +1,4 @@
-package com.project.nasalibrary.ui.nointernetdialogfragment
+package com.project.nasalibrary.ui.noInternetDialogFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

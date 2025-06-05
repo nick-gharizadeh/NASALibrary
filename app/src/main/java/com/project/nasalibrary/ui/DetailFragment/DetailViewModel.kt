@@ -5,17 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.nasalibrary.data.repository.AssetRepository
+import com.project.nasalibrary.data.repository.FavoritesRepository
 import com.project.nasalibrary.model.AssetResponse
+import com.project.nasalibrary.model.Item
 import com.project.nasalibrary.utils.NetworkRequest
 import com.project.nasalibrary.utils.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: AssetRepository
+    private val assetRepository: AssetRepository, private val favoritesRepository: FavoritesRepository
 ) : ViewModel() {
 
     val assetData = MutableLiveData<NetworkRequest<AssetResponse>>()
@@ -23,7 +26,7 @@ class DetailViewModel @Inject constructor(
 
     fun callAssetApi(nasaId: String) = viewModelScope.launch {
         assetData.postValue(NetworkRequest.Loading())
-        val response = repository.getAsset(nasaId)
+        val response = assetRepository.getAsset(nasaId)
         assetData.value = NetworkResponse(response).getNetworkResponse()
     }
 
@@ -58,6 +61,23 @@ class DetailViewModel @Inject constructor(
             // Uri.encode handles spaces by converting them to %20 and also encodes other special characters.
             Uri.encode(processedUrl, "/:?&=%")
         }
+    }
+
+
+    fun addFavorite(item: Item) {
+        viewModelScope.launch {
+            favoritesRepository.addFavoriteItem(item)
+        }
+    }
+
+    fun removeFavorite(item: Item) {
+        viewModelScope.launch {
+            favoritesRepository.removeFavoriteItem(item)
+        }
+    }
+
+    fun isItemFavorite(href: String): Flow<Boolean> {
+        return favoritesRepository.isItemFavorite(href)
     }
 
 }

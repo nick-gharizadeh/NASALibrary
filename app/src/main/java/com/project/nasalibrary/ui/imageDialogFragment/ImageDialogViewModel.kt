@@ -1,4 +1,4 @@
-package com.project.nasalibrary.ui.imagedialogfragment
+package com.project.nasalibrary.ui.imageDialogFragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

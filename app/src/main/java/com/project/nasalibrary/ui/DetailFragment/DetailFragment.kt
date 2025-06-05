@@ -16,6 +16,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -28,9 +31,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.snackbar.Snackbar
 import com.project.nasalibrary.R
 import com.project.nasalibrary.databinding.FragmentDetailBinding
+import com.project.nasalibrary.model.Item
 import com.project.nasalibrary.utils.Constants.VIDEO_MEDIA_TYPE
 import com.project.nasalibrary.utils.NetworkRequest
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -92,7 +98,7 @@ class DetailFragment : Fragment() {
         val imageHref = item.links?.get(0)?.href
 
         if (mediaType == VIDEO_MEDIA_TYPE) {
-            nasaId?.let { viewModel.callAssetApi(it) }
+            nasaId.let { viewModel.callAssetApi(it) }
             loadItemAssetsURL()
             binding.headerImage.visibility = View.GONE
             binding.playerConstraintView.visibility = View.VISIBLE
@@ -103,7 +109,7 @@ class DetailFragment : Fragment() {
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .transform(RoundedCorners(30)).into(binding.headerImage)
             binding.headerImage.setOnClickListener {
-                item.data[0].nasaId?.let { id -> gotoImageDialogFragment(id) }
+                gotoImageDialogFragment(item.data[0].nasaId)
             }
         }
 
@@ -131,6 +137,30 @@ class DetailFragment : Fragment() {
             binding.keywordSection.visibility = View.GONE
         }
 
+        // favorite
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isItemFavorite(item.href).collectLatest { isFavorite ->
+                    if (binding.favoriteButton.isChecked != isFavorite) {
+                        binding.favoriteButton.isChecked = isFavorite
+                    }
+                }
+            }
+        }
+        binding.favoriteButton.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (!buttonView.isPressed && buttonView.isFocused.not()) {
+                return@setOnCheckedChangeListener
+            }
+            if (isChecked) {
+                viewModel.addFavorite(item)
+            } else {
+                viewModel.removeFavorite(item)
+            }
+
+        }
+
+
+        // share feature
         binding.shareImageView.setOnClickListener {
             val shareText = """
             ✨ $title ✨
@@ -341,7 +371,7 @@ class DetailFragment : Fragment() {
                     videoHref?.let { initializePlayer(it) }
                 }
             } else if (currentAssetData == null || currentAssetData is NetworkRequest.Error) {
-                args.Item.data[0].nasaId?.let { viewModel.callAssetApi(it) }
+                args.Item.data[0].nasaId.let { viewModel.callAssetApi(it) }
             }
         } else if (player != null && isPlayerFullscreen) {
             performToggleFullscreen(true, isRestoringState = true)
