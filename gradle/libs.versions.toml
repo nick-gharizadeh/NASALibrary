@@ -25,6 +25,7 @@ navigationFragmentKtx = "2.8.9"
 navigationUiKtx = "2.8.9"
 dagger-hilt="2.51.1"
 retrofit = "2.11.0"
+roomRuntime = "2.6.1"
 shimmer = "0.5.0"
 viewpump = "2.0.3"
 pagingCommonAndroid = "3.3.6"
@@ -35,6 +36,9 @@ androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", versi
 androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Exoplayer" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingCommonAndroid" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }

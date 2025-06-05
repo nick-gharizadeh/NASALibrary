@@ -1,6 +1,5 @@
 package com.project.nasalibrary.model
 
-
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -22,7 +21,7 @@ data class Data(
     @SerializedName("media_type")
     var mediaType: String?, // video
     @SerializedName("nasa_id")
-    var nasaId: String?, // KSC-19850101-MH-NAS01-0001-Apollo_11_Buzz_Aldrin_Experts-B_2141
+    var nasaId: String, // KSC-19850101-MH-NAS01-0001-Apollo_11_Buzz_Aldrin_Experts-B_2141
     @SerializedName("photographer")
     var photographer: String?, // NASA
     @SerializedName("title")
