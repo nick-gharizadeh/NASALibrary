@@ -20,12 +20,11 @@ class ImageDialogViewModel @Inject constructor(
     val assetData = MutableLiveData<NetworkRequest<AssetResponse>>()
 
 
-    fun callAssetApi(nasaId:String) = viewModelScope.launch {
+    fun callAssetApi(nasaId: String) = viewModelScope.launch {
         assetData.postValue(NetworkRequest.Loading())
         val response = repository.getAsset(nasaId)
         assetData.value = NetworkResponse(response).getNetworkResponse()
     }
-
 
 
     // Searches for a preferred image URL in a specific order: medium, small, then large.

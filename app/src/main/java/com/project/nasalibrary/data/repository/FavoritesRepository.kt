@@ -5,7 +5,6 @@ import com.project.nasalibrary.data.datasource.LocalDataSource
 import com.project.nasalibrary.model.Item
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class FavoritesRepository @Inject constructor(
     private val localDataSource: LocalDataSource

@@ -85,6 +85,7 @@ class ImageDialogFragment : DialogFragment() {
                 is NetworkRequest.Loading -> {
                     binding.lottieAnimationViewLoading.visibility = View.VISIBLE
                 }
+
                 is NetworkRequest.Success -> {
                     response.data?.let { data ->
                         val url = viewModel.findPreferredImageUrl(data)
@@ -97,6 +98,7 @@ class ImageDialogFragment : DialogFragment() {
                     binding.lottieAnimationViewLoading.visibility = View.GONE
 
                 }
+
                 is NetworkRequest.Error -> {
                     binding.lottieAnimationViewLoading.visibility = View.GONE
                     response.message?.let {
@@ -110,36 +112,43 @@ class ImageDialogFragment : DialogFragment() {
     private fun setupGestureDetectors() {
         scaleGestureDetector = ScaleGestureDetector(requireContext(), ScaleListener())
 
-        gestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDoubleTap(e: MotionEvent): Boolean {
-                currentAnimator?.cancel()
-                val targetScale = if (scaleFactor > minScale) minScale else maxScale / 2
-                animateToScaleAndCenter(targetScale)
-                return true
-            }
-
-            override fun onScroll(
-                e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
-            ): Boolean {
-                if (scaleGestureDetector.isInProgress) return false
-                currentAnimator?.cancel()
-
-                if (scaleFactor > minScale) {
-                    var newTranslationX = binding.imageView.translationX - (distanceX * panSensitivity)
-                    var newTranslationY = binding.imageView.translationY - (distanceY * panSensitivity)
-
-                    val maxTranslationX = (binding.imageView.width * scaleFactor - binding.imageView.width) / 2
-                    val maxTranslationY = (binding.imageView.height * scaleFactor - binding.imageView.height) / 2
-
-                    newTranslationX = newTranslationX.coerceIn(-maxTranslationX, maxTranslationX)
-                    newTranslationY = newTranslationY.coerceIn(-maxTranslationY, maxTranslationY)
-
-                    binding.imageView.translationX = newTranslationX
-                    binding.imageView.translationY = newTranslationY
+        gestureDetector =
+            GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    currentAnimator?.cancel()
+                    val targetScale = if (scaleFactor > minScale) minScale else maxScale / 2
+                    animateToScaleAndCenter(targetScale)
+                    return true
                 }
-                return true
-            }
-        })
+
+                override fun onScroll(
+                    e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float
+                ): Boolean {
+                    if (scaleGestureDetector.isInProgress) return false
+                    currentAnimator?.cancel()
+
+                    if (scaleFactor > minScale) {
+                        var newTranslationX =
+                            binding.imageView.translationX - (distanceX * panSensitivity)
+                        var newTranslationY =
+                            binding.imageView.translationY - (distanceY * panSensitivity)
+
+                        val maxTranslationX =
+                            (binding.imageView.width * scaleFactor - binding.imageView.width) / 2
+                        val maxTranslationY =
+                            (binding.imageView.height * scaleFactor - binding.imageView.height) / 2
+
+                        newTranslationX =
+                            newTranslationX.coerceIn(-maxTranslationX, maxTranslationX)
+                        newTranslationY =
+                            newTranslationY.coerceIn(-maxTranslationY, maxTranslationY)
+
+                        binding.imageView.translationX = newTranslationX
+                        binding.imageView.translationY = newTranslationY
+                    }
+                    return true
+                }
+            })
     }
 
     private fun animateToScaleAndCenter(targetScale: Float) {
@@ -161,6 +170,7 @@ class ImageDialogFragment : DialogFragment() {
                 override fun onAnimationEnd(animation: Animator) {
                     currentAnimator = null
                 }
+
                 override fun onAnimationCancel(animation: Animator) {
                     currentAnimator = null
                 }
@@ -182,11 +192,15 @@ class ImageDialogFragment : DialogFragment() {
             binding.imageView.scaleX = scaleFactor
             binding.imageView.scaleY = scaleFactor
 
-            val maxTranslationX = (binding.imageView.width * scaleFactor - binding.imageView.width) / 2
-            val maxTranslationY = (binding.imageView.height * scaleFactor - binding.imageView.height) / 2
+            val maxTranslationX =
+                (binding.imageView.width * scaleFactor - binding.imageView.width) / 2
+            val maxTranslationY =
+                (binding.imageView.height * scaleFactor - binding.imageView.height) / 2
 
-            binding.imageView.translationX = binding.imageView.translationX.coerceIn(-maxTranslationX, maxTranslationX)
-            binding.imageView.translationY = binding.imageView.translationY.coerceIn(-maxTranslationY, maxTranslationY)
+            binding.imageView.translationX =
+                binding.imageView.translationX.coerceIn(-maxTranslationX, maxTranslationX)
+            binding.imageView.translationY =
+                binding.imageView.translationY.coerceIn(-maxTranslationY, maxTranslationY)
 
             if (scaleFactor == minScale) {
                 binding.imageView.translationX = 0f

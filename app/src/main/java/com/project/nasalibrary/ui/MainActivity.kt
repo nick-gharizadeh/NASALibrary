@@ -18,9 +18,9 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),DetailFragment.FullscreenListener {
+class MainActivity : AppCompatActivity(), DetailFragment.FullscreenListener {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navController : NavController
+    private lateinit var navController: NavController
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity(),DetailFragment.FullscreenListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val navHostFragment =supportFragmentManager.findFragmentById(R.id.hostFragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.hostFragment) as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
-
 
 
         // Lottie animation setup
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(),DetailFragment.FullscreenListener {
         }
 
     }
+
     override fun toggleActivityUIForFullscreen(isFullscreen: Boolean) {
         binding.bottomNavigation.visibility = if (isFullscreen) View.GONE else View.VISIBLE
     }
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity(),DetailFragment.FullscreenListener {
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase!!))
     }
-
 
 
 }

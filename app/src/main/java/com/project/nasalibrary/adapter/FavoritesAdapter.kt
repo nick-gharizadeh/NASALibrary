@@ -17,7 +17,8 @@ import com.project.nasalibrary.utils.Constants
 import javax.inject.Inject
 
 
-class FavoritesAdapter @Inject constructor() : ListAdapter<Item, FavoritesAdapter.FavoriteViewHolder>(FavoriteDiffCallback()) {
+class FavoritesAdapter @Inject constructor() :
+    ListAdapter<Item, FavoritesAdapter.FavoriteViewHolder>(FavoriteDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {

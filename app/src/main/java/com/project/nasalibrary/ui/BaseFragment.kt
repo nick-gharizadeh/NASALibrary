@@ -36,7 +36,10 @@ abstract class BaseFragment : Fragment() {
                     onRetry()
                 } else {
                     // If still not connected, show a new dialog instance directly.
-                    NoInternetDialogFragment().show(childFragmentManager, NoInternetDialogFragment.TAG)
+                    NoInternetDialogFragment().show(
+                        childFragmentManager,
+                        NoInternetDialogFragment.TAG
+                    )
                 }
             }
         }

@@ -8,8 +8,7 @@ import io.github.inflationx.viewpump.ViewPump
 
 
 @HiltAndroidApp
-class App : Application()
-{
+class App : Application() {
     override fun onCreate() {
         super.onCreate()
         ViewPump.init(

@@ -2,7 +2,8 @@ package com.project.nasalibrary.utils
 
 import androidx.recyclerview.widget.DiffUtil
 
-class BaseDiffUtils<T>(private val oldItems: List<T>, private val newItems: List<T>) : DiffUtil.Callback() {
+class BaseDiffUtils<T>(private val oldItems: List<T>, private val newItems: List<T>) :
+    DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldItems.size
     }

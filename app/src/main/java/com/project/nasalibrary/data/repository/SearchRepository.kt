@@ -19,7 +19,7 @@ class SearchRepository @Inject constructor(private val remote: RemoteDataSource)
             config = PagingConfig(
                 pageSize = Constants.NETWORK_PAGE_SIZE,
                 enablePlaceholders = false,
-                 initialLoadSize = Constants.NETWORK_PAGE_SIZE * 2
+                initialLoadSize = Constants.NETWORK_PAGE_SIZE * 2
             ),
             pagingSourceFactory = { SearchPagingSource(remote, query) }
         ).flow
